@@ -1,20 +1,20 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View, Image } from "react-native";
+import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
+import * as Font from "expo-font";
+// Components to import
+import CustomButton from "./components/CustomButton";
+import { assets } from "./react-native.config";
+import GettingStarted from "./pages/GettingStarted";
 
 export default function App() {
+  const handlePress = () => {
+    console.log("Hello");
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <PaperProvider>
+      <GettingStarted />
+    </PaperProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
