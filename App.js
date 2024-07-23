@@ -15,6 +15,7 @@ export default function App() {
 
   return (
     <PaperProvider>
+      {/* <GettingStarted /> */}
       <Signup />
     </PaperProvider>
   );
