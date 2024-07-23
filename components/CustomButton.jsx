@@ -1,7 +1,7 @@
 import { Button, Text } from "react-native-paper";
 import { StyleSheet } from "react-native";
 
-export default function CustomButton({ title, handlePress }) {
+export default function CustomButton({ title, handlePress, style }) {
   return (
     <Button
       onPress={handlePress}

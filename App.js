@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Image } from "react-native";
 import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
+import Signup from "./pages/Signup";
 import * as Font from "expo-font";
 // Components to import
 import CustomButton from "./components/CustomButton";
@@ -14,7 +15,7 @@ export default function App() {
 
   return (
     <PaperProvider>
-      <GettingStarted />
+      <Signup />
     </PaperProvider>
   );
 }
