@@ -5,7 +5,7 @@ import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
 import * as Font from "expo-font";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
-import SavedMessagesScreen from "./pages/SavedMessagesScreen";
+import SavedMessages from "./pages/SavedMessagesScreen";
 
 // Components to import
 import CustomButton from "./components/CustomButton";
