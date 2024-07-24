@@ -11,6 +11,7 @@ export default function GettingStarted() {
 
   return (
     <View style={styles.container}>
+      <Image source={require("../assets/images/icon.jpeg")} style={styles.dp} />
       <Text
         style={{
           color: "#fff",
@@ -55,5 +56,13 @@ const styles = StyleSheet.create({
     marginLeft: 88,
     position: "relative",
     marginTop: -15,
+  },
+  dp: {
+    height: 300,
+    width: 300,
+    borderRadius: 150,
+    marginBottom: -300,
+    borderWidth: 5,
+    borderColor: "orange",
   },
 });
