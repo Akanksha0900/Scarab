@@ -4,9 +4,9 @@ import { StyleSheet, Text, View, Image } from "react-native";
 // Components to import
 import CustomButton from "../components/CustomButton";
 
-export default function GettingStarted() {
-  const handlePress = () => {
-    console.log("Hello");
+export default function GettingStarted({ navigation }) {
+  const handleSignup = () => {
+    navigation.navigate("Signup");
   };
 
   return (
@@ -39,7 +39,7 @@ export default function GettingStarted() {
         Transform Your Workflow with Scarab—Seamlessly Schedule and Manage Your
         Content
       </Text>
-      <CustomButton title="Continue with Email" handlePress={handlePress} />
+      <CustomButton title="Continue with Email" handlePress={handleSignup} />
     </View>
   );
 }
