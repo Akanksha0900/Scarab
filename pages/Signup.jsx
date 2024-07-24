@@ -1,9 +1,16 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import CustomTextInput from "../components/CustomTextInput";
 import CustomButton from "../components/CustomButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Define the validation schema using Yup
 const SignupSchema = Yup.object().shape({
@@ -18,41 +25,19 @@ const SignupSchema = Yup.object().shape({
 });
 
 export default function Signup({ navigation }) {
-  function handleLogin() {
+  async function handleLogin(values) {
+    console.log(values);
+    await AsyncStorage.setItem("userData", JSON.stringify(values));
     navigation.navigate("Login");
   }
-
-  function handleSignUp(values) {
-    console.log(values);
-    handleLogin(); // For demonstration, navigate to login after signup
-  }
-
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "stretch",
-        backgroundColor: "#161622",
-      }}
-    >
-      <Text
-        style={{
-          marginLeft: 80,
-          color: "white",
-          fontSize: 30,
-          fontWeight: "bold",
-          marginTop: 20,
-          marginBottom: 90,
-        }}
-      >
-        Sign Up
-      </Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Sign Up</Text>
 
       <Formik
         initialValues={{ username: "", email: "", password: "" }}
         validationSchema={SignupSchema}
-        onSubmit={(values) => handleSignUp(values)}
+        onSubmit={(values) => handleLogin(values)}
       >
         {({
           handleChange,
@@ -62,7 +47,7 @@ export default function Signup({ navigation }) {
           errors,
           touched,
         }) => (
-          <View>
+          <View style={styles.formContainer}>
             <CustomTextInput
               title="Username"
               type="text"
@@ -71,9 +56,7 @@ export default function Signup({ navigation }) {
               value={values.username}
             />
             {errors.username && touched.username ? (
-              <Text style={{ color: "red", marginLeft: 270, marginTop: -18 }}>
-                {errors.username}
-              </Text>
+              <Text style={styles.errorText}>{errors.username}</Text>
             ) : null}
 
             <CustomTextInput
@@ -84,9 +67,7 @@ export default function Signup({ navigation }) {
               value={values.email}
             />
             {errors.email && touched.email ? (
-              <Text style={{ color: "red", marginLeft: 270, marginTop: -18 }}>
-                {errors.email}
-              </Text>
+              <Text style={styles.errorText}>{errors.email}</Text>
             ) : null}
 
             <CustomTextInput
@@ -97,41 +78,70 @@ export default function Signup({ navigation }) {
               value={values.password}
             />
             {errors.password && touched.password ? (
-              <Text style={{ color: "red", marginLeft: 80 }}>
-                {errors.password}
-              </Text>
+              <Text style={styles.errorText}>{errors.password}</Text>
             ) : null}
 
             <CustomButton
               title="Signup"
               handlePress={handleSubmit}
-              style={{ width: 200, marginLeft: 90, marginBottom: 15 }}
+              style={styles.button}
             />
-            <Text
-              style={{
-                color: "#fff",
-                alignSelf: "center",
-                marginRight: 45,
-                fontSize: 15,
-              }}
-            >
-              Already have an account?
-            </Text>
-            <TouchableOpacity onPress={handleLogin}>
-              <Text
-                style={{
-                  color: "#f5a623",
-                  fontSize: 15,
-                  marginLeft: 265,
-                  marginTop: -22,
-                }}
-              >
-                Sign In
-              </Text>
-            </TouchableOpacity>
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>Already have an account?</Text>
+              <TouchableOpacity onPress={handleLogin}>
+                <Text style={styles.link}> Sign In</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
       </Formik>
     </View>
   );
 }
+
+// getting width information of the device where the application is getting rendered. Accordingly the size of the buttons are given
+const { width } = Dimensions.get("window");
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#161622",
+    padding: 16,
+  },
+  title: {
+    color: "white",
+    fontSize: 30,
+    fontWeight: "bold",
+    marginBottom: 30,
+    textAlign: "center",
+  },
+  formContainer: {
+    width: "100%",
+    alignItems: "center",
+  },
+  errorText: {
+    color: "red",
+    alignSelf: "flex-start",
+    marginBottom: 8,
+    fontSize: 15,
+  },
+  button: {
+    width: width * 0.6,
+    marginVertical: 15,
+  },
+  footer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  footerText: {
+    color: "#fff",
+    fontSize: 15,
+  },
+  link: {
+    color: "#f5a623",
+    fontSize: 15,
+    marginLeft: 5,
+  },
+});
