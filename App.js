@@ -7,6 +7,7 @@ import * as Font from "expo-font";
 import CustomButton from "./components/CustomButton";
 import { assets } from "./react-native.config";
 import GettingStarted from "./pages/GettingStarted";
+import Login from "./pages/Login";
 
 export default function App() {
   const handlePress = () => {
