@@ -42,7 +42,11 @@ export default function Signup({ Signup }) {
       <CustomTextInput title="Username" type="text" />
       <CustomTextInput title="Email" type="text" />
       <CustomTextInput title="Password" type="password" />
-      <CustomButton title="Signup" handlePress={handlePress} />
+      <CustomButton
+        title="Signup"
+        handlePress={handlePress}
+        style={{ width: 200, marginLeft: 120 }}
+      />
     </View>
   );
 }
