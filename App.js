@@ -18,14 +18,13 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <PaperProvider>
-      {/* <NavigationContainer>
+      <NavigationContainer>
         <Stack.Navigator initialRouteName="GettingStarted">
           <Stack.Screen name="Getting Started" component={GettingStarted} />
           <Stack.Screen name="Signup" component={Signup} />
           <Stack.Screen name="Login" component={Login} />
         </Stack.Navigator>
-      </NavigationContainer> */}
-      <SavedMessagesScreen />
+      </NavigationContainer>
     </PaperProvider>
   );
 }
