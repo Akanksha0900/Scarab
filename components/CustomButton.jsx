@@ -5,7 +5,7 @@ export default function CustomButton({ title, handlePress, style }) {
   return (
     <Button
       onPress={handlePress}
-      style={Styles.button}
+      style={[Styles.button, style]}
       labelStyle={Styles.text}
     >
       {title}
