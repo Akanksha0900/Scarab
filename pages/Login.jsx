@@ -9,35 +9,95 @@ import {
 } from "react-native";
 import CustomTextInput from "../components/CustomTextInput";
 import CustomButton from "../components/CustomButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Formik } from "formik";
+import * as Yup from "yup";
+
+// Defining the validation schema using Yup
+const validationSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email").required("Required"),
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters")
+    .required("Required"),
+});
 
 const Login = ({ navigation }) => {
+  function handleGoToFeedPage() {
+    navigation.navigate("Feed");
+  }
+
   const handleGotoSignUpPage = () => {
     navigation.navigate("Signup");
   };
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const checkCredentials = async (values) => {
+    console.log(values.email);
 
-  const handleLogin = () => {
-    console.log("Email:", email);
-    console.log("Password:", password);
+    const userDataString = await AsyncStorage.getItem("userData");
+    const userData = userDataString ? JSON.parse(userDataString) : {};
+    if (
+      userData.email === values.email &&
+      userData.password === values.password
+    ) {
+      handleGoToFeedPage();
+    } else {
+      alert("User not found with given credentials!");
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign in to Scarab</Text>
+      <Text style={styles.title}>Sign in</Text>
 
-      <CustomTextInput title="Email" />
-      <CustomTextInput title="Password" />
+      <Formik
+        initialValues={{ email: "", password: "" }}
+        validationSchema={validationSchema}
+        onSubmit={(values) => checkCredentials(values)}
+      >
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+        }) => (
+          <View style={styles.formContainer}>
+            <CustomTextInput
+              title="Email"
+              type="text"
+              onChangeText={handleChange("email")}
+              onBlur={handleBlur("email")}
+              value={values.email}
+            />
+            {errors.email && touched.email ? (
+              <Text style={styles.errorText}>{errors.email}</Text>
+            ) : null}
 
-      <CustomButton
-        title="Sign In"
-        style={{ width: 200, marginLeft: 100, marginBottom: 15 }}
-      />
-      <Text style={styles.signupText}>Don't have an account?</Text>
-      <TouchableOpacity onPress={handleGotoSignUpPage}>
-        <Text style={styles.signupLink}>Signup</Text>
-      </TouchableOpacity>
+            <CustomTextInput
+              title="Password"
+              onChangeText={handleChange("password")}
+              onBlur={handleBlur("password")}
+              value={values.password}
+            />
+            {errors.password && touched.password ? (
+              <Text style={styles.errorText}>{errors.password}</Text>
+            ) : null}
+
+            <CustomButton
+              title="Sign In"
+              handlePress={handleSubmit}
+              style={{ width: 200, marginLeft: 100, marginBottom: 15 }}
+            />
+            <View style={styles.footer}>
+              <Text style={styles.signupText}>Don't have an account?</Text>
+              <TouchableOpacity onPress={handleGotoSignUpPage}>
+                <Text style={styles.signupLink}>Signup</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+      </Formik>
     </View>
   );
 };
@@ -55,8 +115,14 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginBottom: 20,
   },
+  errorText: {
+    color: "red",
+    alignSelf: "flex-start",
+    marginBottom: 8,
+    fontSize: 15,
+  },
   title: {
-    marginLeft: 80,
+    textAlign: "center",
     color: "white",
     fontSize: 30,
     fontWeight: "bold",
