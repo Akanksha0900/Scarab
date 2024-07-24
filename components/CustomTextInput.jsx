@@ -1,8 +1,13 @@
-import { Button, Text } from "react-native-paper";
-import { StyleSheet, View } from "react-native";
-import { TextInput } from "react-native";
+import React from "react";
+import { TextInput, Text, View } from "react-native";
 
-export default function CustomTextInput({ title, type }) {
+export default function CustomTextInput({
+  title,
+  type,
+  onChangeText,
+  onBlur,
+  value,
+}) {
   return (
     <View>
       <Text
@@ -16,7 +21,7 @@ export default function CustomTextInput({ title, type }) {
       </Text>
       <TextInput
         style={{
-          backgroundColor: "white",
+          backgroundColor: "#F9E7E7",
           marginLeft: 30,
           height: 60,
           margin: 12,
@@ -27,7 +32,10 @@ export default function CustomTextInput({ title, type }) {
           borderRadius: 20,
         }}
         secureTextEntry={type === "password"}
-      ></TextInput>
+        onChangeText={onChangeText}
+        onBlur={onBlur}
+        value={value}
+      />
     </View>
   );
 }
