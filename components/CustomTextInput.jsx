@@ -1,33 +1,48 @@
-import { Button, Text } from "react-native-paper";
-import { StyleSheet, View } from "react-native";
-import { TextInput } from "react-native";
+import React from "react";
+import { View, TextInput, Text, StyleSheet } from "react-native";
 
-export default function CustomTextInput({ title, type }) {
-  return (
-    <View>
-      <Text
-        style={{
-          color: "white",
-          marginLeft: 40,
-          fontSize: 20,
-        }}
-      >
-        {title}
-      </Text>
-      <TextInput
-        style={{
-          backgroundColor: "white",
-          marginLeft: 30,
-          height: 60,
-          margin: 12,
-          borderWidth: 1,
-          padding: 10,
-          marginBottom: 20,
-          fontSize: 20,
-          borderRadius: 20,
-        }}
-        secureTextEntry={type === "password"}
-      ></TextInput>
-    </View>
-  );
-}
+const CustomTextInput = ({
+  title,
+  type,
+  onChangeText,
+  onBlur,
+  value,
+  style,
+  placeholder,
+  placeholderTextColor = "#999", // Default color for placeholder
+}) => (
+  <View style={[styles.inputContainer, style]}>
+    <Text style={styles.label}>{title}</Text>
+    <TextInput
+      style={styles.input}
+      onChangeText={onChangeText}
+      onBlur={onBlur}
+      value={value}
+      secureTextEntry={type === "password"}
+      placeholder={placeholder}
+      placeholderTextColor={placeholderTextColor} // Set placeholder text color
+    />
+  </View>
+);
+
+const styles = StyleSheet.create({
+  inputContainer: {
+    width: "100%",
+    marginBottom: 16,
+  },
+  label: {
+    color: "#F9E7E7",
+    fontSize: 20,
+    marginBottom: 4,
+  },
+  input: {
+    height: 55,
+    backgroundColor: "#F9E7E7",
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    color: "#000",
+    fontSize: 17,
+  },
+});
+
+export default CustomTextInput;

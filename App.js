@@ -11,6 +11,7 @@ import CustomButton from "./components/CustomButton";
 import GettingStarted from "./pages/GettingStarted";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Feed from "./pages/Feed";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,7 @@ export default function App() {
           <Stack.Screen name="Getting Started" component={GettingStarted} />
           <Stack.Screen name="Signup" component={Signup} />
           <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Feed" component={Feed} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

@@ -9,28 +9,40 @@ import {
 } from "react-native";
 import CustomTextInput from "../components/CustomTextInput";
 import CustomButton from "../components/CustomButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = ({ navigation }) => {
+  function handleGoToFeedPage() {
+    navigation.navigate("Feed");
+  }
+
   const handleGotoSignUpPage = () => {
     navigation.navigate("Signup");
   };
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    console.log("Email:", email);
-    console.log("Password:", password);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+
+  const checkCredentials = async () => {
+    const userDataString = await AsyncStorage.getItem("userData");
+    const userData = userDataString ? JSON.parse(userDataString) : {};
+    if (userData.email === loginEmail && userData.password === loginPassword) {
+      handleGoToFeedPage();
+    } else {
+      alert("User not found with given credentials!");
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign in to Scarab</Text>
+      <Text style={styles.title}>Sign in</Text>
 
-      <CustomTextInput title="Email" />
-      <CustomTextInput title="Password" />
+      <CustomTextInput title="Email" onChangeText={setLoginEmail} />
+      <CustomTextInput title="Password" onChangeText={setLoginPassword} />
 
       <CustomButton
         title="Sign In"
+        handlePress={checkCredentials}
         style={{ width: 200, marginLeft: 100, marginBottom: 15 }}
       />
       <Text style={styles.signupText}>Don't have an account?</Text>
@@ -55,7 +67,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    marginLeft: 80,
+    textAlign: "center",
     color: "white",
     fontSize: 30,
     fontWeight: "bold",
