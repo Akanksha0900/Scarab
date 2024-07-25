@@ -1,153 +1,31 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-} from "react-native";
-import CustomTextInput from "../components/CustomTextInput";
-import CustomButton from "../components/CustomButton";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Formik } from "formik";
-import * as Yup from "yup";
+import React, { useState, useEffect } from "react";
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View, Image } from "react-native";
+import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
+import * as Font from "expo-font";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
 
-// Defining the validation schema using Yup
-const validationSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Required"),
-  password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
-    .required("Required"),
-});
+// Components to import
+import CustomButton from "./components/CustomButton";
+import GettingStarted from "./pages/GettingStarted";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Feed from "./pages/Feed";
 
-const Login = ({ navigation }) => {
-  function handleGoToFeedPage() {
-    navigation.navigate("Feed");
-  }
+const Stack = createNativeStackNavigator();
 
-  const handleGotoSignUpPage = () => {
-    navigation.navigate("Signup");
-  };
-
-  const checkCredentials = async (values) => {
-    console.log(values.email);
-
-    const userDataString = await AsyncStorage.getItem("userData");
-    const userData = userDataString ? JSON.parse(userDataString) : {};
-    if (
-      userData.email === values.email &&
-      userData.password === values.password
-    ) {
-      handleGoToFeedPage();
-    } else {
-      alert("User not found with given credentials!");
-    }
-  };
-
+export default function App() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Sign in</Text>
-
-      <Formik
-        initialValues={{ email: "", password: "" }}
-        validationSchema={validationSchema}
-        onSubmit={(values) => checkCredentials(values)}
-      >
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          values,
-          errors,
-          touched,
-        }) => (
-          <View style={styles.formContainer}>
-            <CustomTextInput
-              title="Email"
-              type="text"
-              onChangeText={handleChange("email")}
-              onBlur={handleBlur("email")}
-              value={values.email}
-            />
-            {errors.email && touched.email ? (
-              <Text style={styles.errorText}>{errors.email}</Text>
-            ) : null}
-
-            <CustomTextInput
-              title="Password"
-              onChangeText={handleChange("password")}
-              onBlur={handleBlur("password")}
-              value={values.password}
-            />
-            {errors.password && touched.password ? (
-              <Text style={styles.errorText}>{errors.password}</Text>
-            ) : null}
-
-            <CustomButton
-              title="Sign In"
-              handlePress={handleSubmit}
-              style={{ width: 200, marginLeft: 100, marginBottom: 15 }}
-            />
-            <View style={styles.footer}>
-              <Text style={styles.signupText}>Don't have an account?</Text>
-              <TouchableOpacity onPress={handleGotoSignUpPage}>
-                <Text style={styles.signupLink}>Signup</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-      </Formik>
-    </View>
+    <PaperProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="GettingStarted">
+          <Stack.Screen name="Getting Started" component={GettingStarted} />
+          <Stack.Screen name="Signup" component={Signup} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Feed" component={Feed} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </PaperProvider>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#161622",
-    paddingHorizontal: 20,
-    justifyContent: "center",
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    alignSelf: "center",
-    marginBottom: 20,
-  },
-  errorText: {
-    color: "red",
-    alignSelf: "flex-start",
-    marginBottom: 8,
-    fontSize: 15,
-  },
-  title: {
-    textAlign: "center",
-    color: "white",
-    fontSize: 30,
-    fontWeight: "bold",
-    marginTop: 20,
-    marginBottom: 90,
-  },
-  input: {
-    backgroundColor: "#1e1e1e",
-    color: "#fff",
-    borderRadius: 5,
-    padding: 15,
-    marginBottom: 15,
-  },
-  signupText: {
-    color: "#fff",
-    alignSelf: "center",
-    marginRight: 45,
-    fontSize: 15,
-  },
-  signupLink: {
-    color: "#f5a623",
-    fontSize: 15,
-    marginLeft: 248,
-    marginTop: -18,
-  },
-});
-
-export default Login;
+}
