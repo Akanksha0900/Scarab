@@ -22,6 +22,8 @@ const validationSchema = Yup.object().shape({
 });
 
 const Login = ({ navigation }) => {
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
   function handleGoToFeedPage() {
     navigation.navigate("Feed");
   }
@@ -52,7 +54,10 @@ const Login = ({ navigation }) => {
       <Formik
         initialValues={{ email: "", password: "" }}
         validationSchema={validationSchema}
-        onSubmit={(values) => checkCredentials(values)}
+        onSubmit={(values, action) => {
+          checkCredentials(values);
+          action.resetForm();
+        }}
       >
         {({
           handleChange,
@@ -79,6 +84,10 @@ const Login = ({ navigation }) => {
               onChangeText={handleChange("password")}
               onBlur={handleBlur("password")}
               value={values.password}
+              secureTextEntry={!passwordVisible}
+              togglePasswordVisibility={() =>
+                setPasswordVisible(!passwordVisible)
+              }
             />
             {errors.password && touched.password ? (
               <Text style={styles.errorText}>{errors.password}</Text>
