@@ -1,6 +1,12 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, ScrollView } from "react-native";
-import CustomButton from "../components/CustomButton";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+} from "react-native";
 
 export default function Profile({ navigation }) {
   // Dummy data for the profile
@@ -17,16 +23,6 @@ export default function Profile({ navigation }) {
     ],
   };
 
-  function handleEditProfile() {
-    // Navigate to Edit Profile screen
-    navigation.navigate("EditProfile");
-  }
-
-  function handleViewPosts() {
-    // Navigate to View Posts screen
-    navigation.navigate("Posts", { posts: userData.posts });
-  }
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -37,18 +33,6 @@ export default function Profile({ navigation }) {
         <Text style={styles.username}>{userData.username}</Text>
         <Text style={styles.email}>{userData.email}</Text>
         <Text style={styles.bio}>{userData.bio}</Text>
-      </View>
-      <View style={styles.buttons}>
-        <CustomButton
-          title="Edit Profile"
-          handlePress={handleEditProfile}
-          style={styles.button}
-        />
-        <CustomButton
-          title="View Posts"
-          handlePress={handleViewPosts}
-          style={styles.button}
-        />
       </View>
       <View style={styles.posts}>
         <Text style={styles.postsTitle}>Posts</Text>
@@ -62,61 +46,57 @@ export default function Profile({ navigation }) {
   );
 }
 
+const { height, width } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#161622",
+    padding: 20,
   },
   header: {
     alignItems: "center",
-    padding: 20,
+    marginBottom: 30,
   },
   profilePicture: {
     width: 150,
     height: 150,
     borderRadius: 75,
     marginBottom: 20,
+    marginTop: 0.06 * height,
   },
   username: {
-    fontSize: 24,
+    fontSize: 26,
     color: "white",
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 5,
   },
   email: {
     fontSize: 18,
-    color: "white",
+    color: "#bbb",
     marginBottom: 10,
   },
   bio: {
     fontSize: 16,
-    color: "white",
+    color: "#bbb",
     textAlign: "center",
     marginHorizontal: 20,
     marginBottom: 20,
   },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginBottom: 20,
-  },
-  button: {
-    width: 150,
-  },
   posts: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   postsTitle: {
     fontSize: 24,
     color: "white",
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 20,
   },
   post: {
     backgroundColor: "#282828",
     padding: 15,
     borderRadius: 10,
-    marginBottom: 10,
+    marginBottom: 15,
   },
   postContent: {
     fontSize: 16,
