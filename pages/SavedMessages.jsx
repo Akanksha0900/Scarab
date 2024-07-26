@@ -2,21 +2,27 @@ import React, { useContext } from "react";
 import {
   View,
   Text,
-  TextInput,
+  Image,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
   SafeAreaView,
   Dimensions,
-  Image,
 } from "react-native";
-
+import { IconButton } from "react-native-paper";
 import { FavoriteContext } from "../Contexts/FavoritesContext";
-import CustomTextInput from "../components/CustomTextInput";
 
 const SavedPosts = () => {
-  const { state } = useContext(FavoriteContext);
+  const { state, dispatch } = useContext(FavoriteContext);
   const { favorites } = state;
+
+  const toggleFavorite = (post) => {
+    if (favorites.some((item) => item.id === post.id)) {
+      dispatch({ type: "REMOVE_FROM_FAVORITE", payload: post.id });
+    } else {
+      dispatch({ type: "ADD_TO_FAVORITE", payload: post });
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -25,7 +31,15 @@ const SavedPosts = () => {
         {favorites.length > 0 ? (
           favorites.map((post) => (
             <View key={post.id} style={styles.postContainer}>
-              {/* <View style={styles.avatar} /> */}
+              <View style={styles.header}>
+                <Image source={{ uri: post.avatar }} style={styles.avatar} />
+                <View style={styles.headerText}>
+                  <Text style={styles.username}>{post.username}</Text>
+                  <Text style={styles.date}>
+                    {post.date} at {post.time}
+                  </Text>
+                </View>
+              </View>
               <Image
                 source={
                   typeof post.image !== "string"
@@ -34,13 +48,21 @@ const SavedPosts = () => {
                 }
                 style={styles.postImage}
               />
-              <View style={styles.postInfo}>
-                <Text style={styles.postTitle} numberOfLines={1}>
-                  {post.caption}
-                </Text>
-                <Text style={styles.postAuthor}>Author Name</Text>
-              </View>
-              <TouchableOpacity style={styles.moreButton}></TouchableOpacity>
+              <Text style={styles.caption}>{post.caption}</Text>
+              <TouchableOpacity
+                onPress={() => toggleFavorite(post)}
+                style={styles.favoriteButton}
+              >
+                <IconButton
+                  icon={
+                    favorites.some((item) => item.id === post.id)
+                      ? "heart"
+                      : "heart-outline"
+                  }
+                  iconColor="red"
+                  size={30}
+                />
+              </TouchableOpacity>
             </View>
           ))
         ) : (
@@ -68,57 +90,52 @@ const styles = StyleSheet.create({
     marginLeft: 0.08 * width,
     marginBottom: 20,
   },
-  searchInput: {
-    color: "#fff",
-    borderRadius: 5,
-    marginBottom: 20,
-  },
   postContainer: {
-    flexDirection: "column",
-    alignItems: "center",
+    marginBottom: 20,
     backgroundColor: "#fff",
-    borderRadius: 15,
+    borderRadius: 10,
+    overflow: "hidden",
+    padding: 10,
   },
-  postImage: {
-    width: 300,
-    height: 250,
-    borderRadius: 25,
-    marginVertical: 30,
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
   },
   avatar: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "#f5a623",
+    marginRight: 10,
   },
-  postInfo: {
-    flex: 1,
+  headerText: {
+    flexDirection: "column",
   },
-  postTitle: {
-    color: "white",
-    fontSize: 16,
+  username: {
     fontWeight: "bold",
+    fontSize: 16,
   },
-  postAuthor: {
-    color: "gray",
+  date: {
+    color: "#888",
     fontSize: 14,
   },
-  moreButton: {
+  postImage: {
+    width: "100%",
+    height: 300,
+    borderRadius: 10,
+  },
+  caption: {
     padding: 10,
+    fontSize: 16,
+  },
+  favoriteButton: {
+    alignSelf: "flex-start",
   },
   noPostsText: {
     color: "gray",
     fontSize: 18,
     textAlign: "center",
     marginTop: 20,
-  },
-
-  navItem: {
-    alignItems: "center",
-  },
-  navText: {
-    color: "white",
-    fontSize: 16,
   },
 });
 

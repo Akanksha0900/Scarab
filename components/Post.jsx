@@ -11,12 +11,24 @@ const Post = ({ post, isFavorite, toggleFavorite }) => {
 
   return (
     <View style={styles.postContainer}>
+      <View style={styles.header}>
+        <Image source={{ uri: post.avatar }} style={styles.avatar} />
+        <View style={styles.headerText}>
+          <Text style={styles.username}>{post.username}</Text>
+          <Text style={styles.date}>
+            {post.date} at {post.time}
+          </Text>
+        </View>
+      </View>
       <Image
         source={isLocalImage ? post.image : { uri: post.image }}
         style={styles.postImage}
       />
       <Text style={styles.caption}>{post.caption}</Text>
-      <TouchableOpacity onPress={handleToggleFavorite}>
+      <TouchableOpacity
+        onPress={handleToggleFavorite}
+        style={styles.favoriteButton}
+      >
         <IconButton
           icon={isFavorite ? "heart" : "heart-outline"}
           iconColor="red"
@@ -33,14 +45,41 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 10,
     overflow: "hidden",
+    padding: 10,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
+  },
+  headerText: {
+    flexDirection: "column",
+  },
+  username: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  date: {
+    color: "#888",
+    fontSize: 14,
   },
   postImage: {
     width: "100%",
     height: 300,
+    borderRadius: 10,
   },
   caption: {
     padding: 10,
     fontSize: 16,
+  },
+  favoriteButton: {
+    alignSelf: "flex-start",
   },
 });
 
