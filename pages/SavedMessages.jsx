@@ -1,44 +1,73 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
-  TextInput,
+  Image,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
   SafeAreaView,
   Dimensions,
 } from "react-native";
+import { IconButton } from "react-native-paper";
+import { FavoriteContext } from "../Contexts/FavoritesContext";
 
 const SavedPosts = () => {
-  const posts = [
-    { id: 1, title: "Post 1", author: "MrBeast" },
-    { id: 2, title: "Post 2", author: "SharkTank" },
-  ];
+  const { state, dispatch } = useContext(FavoriteContext);
+  const { favorites } = state;
+
+  const toggleFavorite = (post) => {
+    if (favorites.some((item) => item.id === post.id)) {
+      dispatch({ type: "REMOVE_FROM_FAVORITE", payload: post.id });
+    } else {
+      dispatch({ type: "ADD_TO_FAVORITE", payload: post });
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Saved Posts</Text>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search your saved posts"
-        placeholderTextColor="#777"
-      />
       <ScrollView>
-        {posts.map((post) => (
-          <View key={post.id} style={styles.postContainer}>
-            <View style={styles.avatar} />
-            <View style={styles.postInfo}>
-              <Text style={styles.postTitle} numberOfLines={1}>
-                {post.title}
-              </Text>
-              <Text style={styles.postAuthor}>{post.author}</Text>
+        {favorites.length > 0 ? (
+          favorites.map((post) => (
+            <View key={post.id} style={styles.postContainer}>
+              <View style={styles.header}>
+                <Image source={{ uri: post.avatar }} style={styles.avatar} />
+                <View style={styles.headerText}>
+                  <Text style={styles.username}>{post.username}</Text>
+                  <Text style={styles.date}>
+                    {post.date} at {post.time}
+                  </Text>
+                </View>
+              </View>
+              <Image
+                source={
+                  typeof post.image !== "string"
+                    ? post.image
+                    : { uri: post.image }
+                }
+                style={styles.postImage}
+              />
+              <Text style={styles.caption}>{post.caption}</Text>
+              <TouchableOpacity
+                onPress={() => toggleFavorite(post)}
+                style={styles.favoriteButton}
+              >
+                <IconButton
+                  icon={
+                    favorites.some((item) => item.id === post.id)
+                      ? "heart"
+                      : "heart-outline"
+                  }
+                  iconColor="red"
+                  size={30}
+                />
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.moreButton}>
-              <Text style={styles.moreButtonText}>⋮</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
+          ))
+        ) : (
+          <Text style={styles.noPostsText}>No saved posts yet.</Text>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -61,60 +90,52 @@ const styles = StyleSheet.create({
     marginLeft: 0.08 * width,
     marginBottom: 20,
   },
-  searchInput: {
-    backgroundColor: "#1e1e1e",
-    color: "#fff",
-    borderRadius: 5,
-    padding: 15,
-    marginBottom: 20,
-  },
   postContainer: {
+    marginBottom: 20,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    overflow: "hidden",
+    padding: 10,
+  },
+  header: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 10,
     marginBottom: 10,
-    backgroundColor: "#1e1e1e",
-    borderRadius: 10,
   },
   avatar: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "#f5a623",
     marginRight: 10,
   },
-  postInfo: {
-    flex: 1,
+  headerText: {
+    flexDirection: "column",
   },
-  postTitle: {
-    color: "white",
-    fontSize: 16,
+  username: {
     fontWeight: "bold",
+    fontSize: 16,
   },
-  postAuthor: {
-    color: "gray",
+  date: {
+    color: "#888",
     fontSize: 14,
   },
-  moreButton: {
+  postImage: {
+    width: "100%",
+    height: 300,
+    borderRadius: 10,
+  },
+  caption: {
     padding: 10,
-  },
-  moreButtonText: {
-    color: "white",
-    fontSize: 20,
-  },
-  bottomNav: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 10,
-    borderTopColor: "#1e1e1e",
-    borderTopWidth: 1,
-  },
-  navItem: {
-    alignItems: "center",
-  },
-  navText: {
-    color: "white",
     fontSize: 16,
+  },
+  favoriteButton: {
+    alignSelf: "flex-start",
+  },
+  noPostsText: {
+    color: "gray",
+    fontSize: 18,
+    textAlign: "center",
+    marginTop: 20,
   },
 });
 
