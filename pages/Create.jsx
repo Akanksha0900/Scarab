@@ -1,3 +1,5 @@
+// create.jsx
+
 import React, { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -15,7 +17,7 @@ import {
 import CustomTextInput from "../components/CustomTextInput";
 import CustomButton from "../components/CustomButton";
 
-const Create = () => {
+const Create = ({ navigation }) => {
   const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState({
     title: "",
@@ -35,10 +37,10 @@ const Create = () => {
     });
 
     if (!result.canceled) {
-      setForm((prevForm) => ({
-        ...prevForm,
+      setForm({
+        ...form,
         image: result.assets[0],
-      }));
+      });
     }
   };
 
@@ -51,7 +53,7 @@ const Create = () => {
 
     try {
       const posts = JSON.parse(await AsyncStorage.getItem("posts")) || [];
-      const newPost = {
+      posts.unshift({
         id: Date.now().toString(),
         title: form.title,
         image: form.image.uri,
@@ -61,8 +63,7 @@ const Create = () => {
         scheduleTime: form.scheduleTime
           ? form.scheduleTime.toISOString()
           : null,
-      };
-      posts.push(newPost);
+      });
 
       await AsyncStorage.setItem("posts", JSON.stringify(posts));
       Alert.alert("Success", "Post uploaded successfully");
@@ -75,8 +76,8 @@ const Create = () => {
         scheduleTime: null,
       });
 
-      // Optimistic UI update can be handled here
-      // Update the state in your feed/profile components to reflect the new post
+      // Navigate back to feed
+      navigation.navigate("Feed");
     } catch (error) {
       Alert.alert("Error", "There was an error uploading the post");
     } finally {
@@ -86,12 +87,12 @@ const Create = () => {
 
   const onDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
-    setForm((prevForm) => ({ ...prevForm, scheduleDate: selectedDate }));
+    setForm({ ...form, scheduleDate: selectedDate });
   };
 
   const onTimeChange = (event, selectedTime) => {
     setShowTimePicker(false);
-    setForm((prevForm) => ({ ...prevForm, scheduleTime: selectedTime }));
+    setForm({ ...form, scheduleTime: selectedTime });
   };
 
   return (
@@ -103,9 +104,7 @@ const Create = () => {
             title="Caption"
             placeholder="Give your image a catchy caption..."
             value={form.title}
-            onChangeText={(text) =>
-              setForm((prevForm) => ({ ...prevForm, title: text }))
-            }
+            onChangeText={(text) => setForm({ ...form, title: text })}
           />
         </View>
 
@@ -174,7 +173,7 @@ const Create = () => {
         <CustomButton
           title="Submit & Publish"
           handlePress={submit}
-          disabled={uploading}
+          loading={uploading}
         />
       </ScrollView>
     </SafeAreaView>
@@ -187,53 +186,46 @@ const styles = StyleSheet.create({
     backgroundColor: "#161622",
   },
   scrollView: {
-    paddingHorizontal: 16,
-    marginTop: 24,
+    padding: 16,
   },
   headerText: {
+    color: "#fff",
     fontSize: 24,
-    color: "#FFFFFF",
-    fontWeight: "600",
-    textAlign: "center",
+    fontWeight: "bold",
+    marginBottom: 16,
   },
   formField: {
-    marginTop: 20,
-  },
-  label: {
-    fontSize: 20,
-    color: "#F9E7E7",
-    marginBottom: 15,
+    marginBottom: 16,
   },
   uploadSection: {
-    marginTop: 20,
+    marginBottom: 16,
   },
-  uploadedImage: {
-    width: "100%",
-    height: 300,
-    borderRadius: 16,
+  label: {
+    color: "#fff",
+    fontSize: 18,
+    marginBottom: 8,
   },
   uploadPlaceholder: {
     width: "100%",
-    height: 300,
-    backgroundColor: "#333333",
-    borderRadius: 16,
-    borderColor: "#444444",
-    borderWidth: 1,
+    height: 200,
+    backgroundColor: "#333",
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 10,
   },
   uploadIconContainer: {
-    width: 56,
-    height: 56,
-    borderColor: "#FF8C00",
-    borderWidth: 2,
-    borderRadius: 28,
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: "#444",
+    padding: 20,
+    borderRadius: 10,
   },
   uploadIcon: {
-    width: 28,
-    height: 28,
+    width: 50,
+    height: 50,
+  },
+  uploadedImage: {
+    width: "100%",
+    height: 200,
+    borderRadius: 10,
   },
 });
 
