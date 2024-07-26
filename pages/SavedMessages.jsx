@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from "react";
 import {
   View,
   Text,
@@ -7,54 +7,51 @@ import {
   StyleSheet,
   ScrollView,
   SafeAreaView,
-} from 'react-native';
+  Dimensions,
+  Image,
+} from "react-native";
 
-const SavedVideos = () => {
-  const videos = [
-    { id: 1, title:"Video 1",author:"MrBeast"},
-    { id: 1, title:"Video2",author:"SharkTank"},
-    
-  ];
+import { FavoriteContext } from "../Contexts/FavoritesContext";
+import CustomTextInput from "../components/CustomTextInput";
+
+const SavedPosts = () => {
+  const { state } = useContext(FavoriteContext);
+  const { favorites } = state;
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Saved Videos</Text>
-      <TextInput 
-        style={styles.searchInput}
-        placeholder="Search your saved videos"
-        placeholderTextColor="#777"
-      />
+      <Text style={styles.title}>Saved Posts</Text>
       <ScrollView>
-        {videos.map((video) => (
-          <View key={video.id} style={styles.videoContainer}>
-            <View style={styles.avatar} />
-            <View style={styles.videoInfo}>
-              <Text style={styles.videoTitle} numberOfLines={1}>{video.title}</Text>
-              <Text style={styles.videoAuthor}>{video.author}</Text>
+        {favorites.length > 0 ? (
+          favorites.map((post) => (
+            <View key={post.id} style={styles.postContainer}>
+              {/* <View style={styles.avatar} /> */}
+              <Image
+                source={
+                  typeof post.image !== "string"
+                    ? post.image
+                    : { uri: post.image }
+                }
+                style={styles.postImage}
+              />
+              <View style={styles.postInfo}>
+                <Text style={styles.postTitle} numberOfLines={1}>
+                  {post.caption}
+                </Text>
+                <Text style={styles.postAuthor}>Author Name</Text>
+              </View>
+              <TouchableOpacity style={styles.moreButton}></TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.moreButton}>
-              <Text style={styles.moreButtonText}>⋮</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
+          ))
+        ) : (
+          <Text style={styles.noPostsText}>No saved posts yet.</Text>
+        )}
       </ScrollView>
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem}>
-          <Text style={styles.navText}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Text style={styles.navText}>Profile</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Text style={styles.navText}>Create</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Text style={styles.navText}>Saved</Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 };
+
+const { height, width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
@@ -67,63 +64,62 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 30,
     fontWeight: "bold",
+    marginTop: 0.06 * height,
+    marginLeft: 0.08 * width,
     marginBottom: 20,
   },
   searchInput: {
-    backgroundColor: "#1e1e1e",
     color: "#fff",
     borderRadius: 5,
-    padding: 15,
     marginBottom: 20,
   },
-  videoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    marginBottom: 10,
-    backgroundColor: '#1e1e1e',
-    borderRadius: 10,
+  postContainer: {
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 15,
+  },
+  postImage: {
+    width: 300,
+    height: 250,
+    borderRadius: 25,
+    marginVertical: 30,
   },
   avatar: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#f5a623',
-    marginRight: 10,
+    backgroundColor: "#f5a623",
   },
-  videoInfo: {
+  postInfo: {
     flex: 1,
   },
-  videoTitle: {
-    color: 'white',
+  postTitle: {
+    color: "white",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
-  videoAuthor: {
-    color: 'gray',
+  postAuthor: {
+    color: "gray",
     fontSize: 14,
   },
   moreButton: {
     padding: 10,
   },
-  moreButtonText: {
-    color: 'white',
-    fontSize: 20,
+  noPostsText: {
+    color: "gray",
+    fontSize: 18,
+    textAlign: "center",
+    marginTop: 20,
   },
-  bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 10,
-    borderTopColor: '#1e1e1e',
-    borderTopWidth: 1,
-  },
+
   navItem: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   navText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
   },
 });
 
-export default SavedVideos;
+export default SavedPosts;

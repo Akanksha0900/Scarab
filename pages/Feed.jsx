@@ -1,9 +1,9 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, Text, View, Dimensions, ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomTextInput from "../components/CustomTextInput";
 import { IconButton } from "react-native-paper";
+import { FavoriteContext } from "../Contexts/FavoritesContext";
 import Post from "../components/Post";
 import StoryBar from "../components/StoryBar";
 
@@ -17,49 +17,52 @@ const posts = [
     id: 1,
     image: images.people,
     caption: "Exploring the mountains!",
-    isFavorite: false,
   },
   {
     id: 2,
     image: images.robo,
     caption: "Loving the beach vibes!",
-    isFavorite: true,
   },
   {
     id: 3,
     image: images.people,
     caption: "Exploring the mountains!",
-    isFavorite: false,
   },
   {
     id: 4,
     image: images.robo,
     caption: "Loving the beach vibes!",
-    isFavorite: true,
   },
   {
     id: 5,
     image: images.people,
     caption: "Exploring the mountains!",
-    isFavorite: false,
   },
   {
     id: 6,
     image: images.robo,
     caption: "Loving the beach vibes!",
-    isFavorite: true,
   },
-  // Add more posts as needed
 ];
 
 export default function Feed({ navigation }) {
+  const { state, dispatch } = useContext(FavoriteContext);
+  const { favorites } = state;
+
+  const toggleFavorite = (post) => {
+    if (favorites.some((item) => item.id === post.id)) {
+      dispatch({ type: "REMOVE_FROM_FAVORITE", payload: post.id });
+    } else {
+      dispatch({ type: "ADD_TO_FAVORITE", payload: post });
+    }
+  };
   const [userName, setUserName] = useState("");
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       const userDataString = await AsyncStorage.getItem("userData");
       const userData = userDataString ? JSON.parse(userDataString) : {};
-      setUserName(userData.name);
+      setUserName(userData.username);
     };
     fetchUserDetails();
   }, []);
@@ -80,7 +83,12 @@ export default function Feed({ navigation }) {
       <StoryBar />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {posts.map((post) => (
-          <Post key={post.id} post={post} />
+          <Post
+            key={post.id}
+            post={post}
+            isFavorite={favorites.some((item) => item.id === post.id)}
+            toggleFavorite={toggleFavorite}
+          />
         ))}
       </ScrollView>
     </View>
@@ -112,7 +120,7 @@ const styles = StyleSheet.create({
   search: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 4,
   },
   searchIcon: {
     marginLeft: width * 0.05,

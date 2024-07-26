@@ -33,7 +33,7 @@ const StoryBar = () => {
 const styles = StyleSheet.create({
   container: {
     marginVertical: 10,
-    height: 140,
+    height: 142,
   },
   storyContainer: {
     alignItems: "center",

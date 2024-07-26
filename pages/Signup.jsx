@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import CustomTextInput from "../components/CustomTextInput";
 import CustomButton from "../components/CustomButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Define the validation schema using Yup
+// Defining the validation schema using Yup
 const SignupSchema = Yup.object().shape({
   username: Yup.string()
     .min(2, "Too Short!")
@@ -25,11 +25,14 @@ const SignupSchema = Yup.object().shape({
 });
 
 export default function Signup({ navigation }) {
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
   async function handleLogin(values) {
     console.log(values);
     await AsyncStorage.setItem("userData", JSON.stringify(values));
     navigation.navigate("Login");
   }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sign Up</Text>
@@ -37,7 +40,10 @@ export default function Signup({ navigation }) {
       <Formik
         initialValues={{ username: "", email: "", password: "" }}
         validationSchema={SignupSchema}
-        onSubmit={(values) => handleLogin(values)}
+        onSubmit={(values, action) => {
+          handleLogin(values);
+          action.resetForm(); //This takes place when the user hits submit button. the form will then reset to blank fields.
+        }}
       >
         {({
           handleChange,
@@ -72,10 +78,13 @@ export default function Signup({ navigation }) {
 
             <CustomTextInput
               title="Password"
-              type="password"
               onChangeText={handleChange("password")}
               onBlur={handleBlur("password")}
               value={values.password}
+              secureTextEntry={!passwordVisible} // Toggle password visibility
+              togglePasswordVisibility={() =>
+                setPasswordVisible(!passwordVisible)
+              }
             />
             {errors.password && touched.password ? (
               <Text style={styles.errorText}>{errors.password}</Text>
@@ -88,7 +97,7 @@ export default function Signup({ navigation }) {
             />
             <View style={styles.footer}>
               <Text style={styles.footerText}>Already have an account?</Text>
-              <TouchableOpacity onPress={handleLogin}>
+              <TouchableOpacity onPress={() => navigation.navigate("Login")}>
                 <Text style={styles.link}> Sign In</Text>
               </TouchableOpacity>
             </View>
