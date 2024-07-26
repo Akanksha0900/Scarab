@@ -6,8 +6,10 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Profile({ navigation }) {
   const [userData, setUserData] = useState(null);
@@ -46,6 +48,13 @@ export default function Profile({ navigation }) {
     fetchData();
   }, []);
 
+  const handleLogout = () => {
+    // Clear any user data from AsyncStorage if necessary
+    AsyncStorage.removeItem("posts").then(() => {
+      navigation.navigate("Getting Started");
+    });
+  };
+
   if (!userData) {
     return (
       <View style={styles.loadingContainer}>
@@ -64,6 +73,9 @@ export default function Profile({ navigation }) {
         <Text style={styles.username}>{userData.username}</Text>
         <Text style={styles.email}>{userData.email}</Text>
         <Text style={styles.bio}>{data.bio}</Text>
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <MaterialIcons name="logout" size={30} color="white" />
+        </TouchableOpacity>
       </View>
       <View style={styles.posts}>
         <Text style={styles.postsTitle}>Posts</Text>
@@ -148,5 +160,10 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 200,
     borderRadius: 10,
+  },
+  logoutButton: {
+    position: "absolute",
+    top: 40,
+    right: 20,
   },
 });
