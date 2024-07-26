@@ -17,7 +17,7 @@ const CustomTextInput = ({
     <Text style={styles.label}>{title}</Text>
     <View style={styles.inputWrapper}>
       <TextInput
-        style={styles.input}
+        style={[styles.input, style]} // Apply custom style here
         onChangeText={onChangeText}
         onBlur={onBlur}
         value={value}
