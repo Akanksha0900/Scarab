@@ -2,8 +2,12 @@ import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { IconButton } from "react-native-paper";
 
-const Post = ({ post }) => {
+const Post = ({ post, isFavorite, toggleFavorite }) => {
   const isLocalImage = typeof post.image !== "string";
+
+  const handleToggleFavorite = () => {
+    toggleFavorite(post);
+  };
 
   return (
     <View style={styles.postContainer}>
@@ -12,12 +16,11 @@ const Post = ({ post }) => {
         style={styles.postImage}
       />
       <Text style={styles.caption}>{post.caption}</Text>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={handleToggleFavorite}>
         <IconButton
-          icon={post.isFavorite ? "heart" : "heart-outline"}
-          color={post.isFavorite ? "red" : ""}
+          icon={isFavorite ? "heart" : "heart-outline"}
+          iconColor="red"
           size={30}
-          onPress={() => {}}
         />
       </TouchableOpacity>
     </View>
