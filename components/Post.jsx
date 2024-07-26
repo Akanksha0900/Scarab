@@ -12,7 +12,10 @@ const Post = ({ post, isFavorite, toggleFavorite }) => {
   return (
     <View style={styles.postContainer}>
       <View style={styles.header}>
-        <Image source={{ uri: post.avatar }} style={styles.avatar} />
+        <Image
+          source={isLocalImage ? post.avatar : { uri: post.avatar }}
+          style={styles.avatar}
+        />
         <View style={styles.headerText}>
           <Text style={styles.username}>{post.username}</Text>
           <Text style={styles.date}>
