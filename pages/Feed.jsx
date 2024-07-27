@@ -1,5 +1,3 @@
-// feed.jsx
-
 import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, Text, View, ScrollView, Dimensions } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -49,7 +47,7 @@ const posts = [
     avatar: images.av1,
     image: images.img1,
     caption: "Caught the perfect sunrise this morning!",
-    date: "11/25/2023",
+    date: "25/11/2023",
     time: "2:34 AM",
   },
   {
@@ -76,7 +74,7 @@ const posts = [
     avatar: images.av4,
     image: images.img4,
     caption: "Strolling through the park this afternoon.",
-    date: "9/30/2023",
+    date: "30/9/2023",
     time: "3:37 PM",
   },
   {
@@ -85,7 +83,7 @@ const posts = [
     avatar: images.av5,
     image: images.img5,
     caption: "Night owl thoughts.",
-    date: "11/1/2023",
+    date: "1/11/2023",
     time: "2:58 AM",
   },
   {
@@ -94,7 +92,7 @@ const posts = [
     avatar: images.av6,
     image: images.img6,
     caption: "Found a rare bird during my morning hike!",
-    date: "11/23/2023",
+    date: "23/3/2023",
     time: "7:55 AM",
   },
   {
@@ -103,7 +101,7 @@ const posts = [
     avatar: images.av7,
     image: images.img7,
     caption: "Winter wonderland is here!",
-    date: "12/21/2023",
+    date: "12/1/2023",
     time: "7:40 AM",
   },
   {
@@ -112,7 +110,7 @@ const posts = [
     avatar: images.av8,
     image: images.img8,
     caption: "Catching up on my favorite sci-fi series.",
-    date: "1/13/2024",
+    date: "31/1/2024",
     time: "3:32 PM",
   },
   {
@@ -121,7 +119,7 @@ const posts = [
     avatar: images.av9,
     image: images.img9,
     caption: "Lovely evening walk by the beach.",
-    date: "1/26/2024",
+    date: "11/2/2024",
     time: "6:22 PM",
   },
   {
@@ -130,7 +128,7 @@ const posts = [
     avatar: images.av10,
     image: images.img10,
     caption: "Spring flowers in full bloom.",
-    date: "4/30/2024",
+    date: "14/4/2024",
     time: "1:13 PM",
   },
   {
@@ -139,7 +137,7 @@ const posts = [
     avatar: images.av11,
     image: images.img11,
     caption: "Coffee and a good book to start the day.",
-    date: "1/28/2024",
+    date: "9/6/2024",
     time: "8:31 AM",
   },
   {
@@ -148,7 +146,7 @@ const posts = [
     avatar: images.av12,
     image: images.img12,
     caption: "Nature walk this afternoon.",
-    date: "3/19/2024",
+    date: "13/9/2024",
     time: "3:39 PM",
   },
   {
@@ -157,7 +155,7 @@ const posts = [
     avatar: images.av13,
     image: images.img13,
     caption: "Early morning fishing trip!",
-    date: "1/27/2024",
+    date: "1/7/2024",
     time: "5:02 AM",
   },
   {
@@ -174,8 +172,8 @@ const posts = [
     username: "Meryl",
     avatar: images.av15,
     image: images.img15,
-    caption: "Luffy Gear  is awesome!",
-    date: "11/17/2023",
+    caption: "Luffy Gear 5 is awesome!",
+    date: "11/12/2023",
     time: "8:21 AM",
   },
 ];
@@ -237,7 +235,7 @@ export default function Feed({ navigation }) {
 
     await AsyncStorage.setItem("posts", JSON.stringify(updatedPosts));
     const filteredPosts = filterFuturePosts(updatedPosts);
-    setPostsData([...filteredPosts, ...posts]); // Update the posts data
+    setPostsData([...filteredPosts, ...posts]);
   };
 
   useEffect(() => {
