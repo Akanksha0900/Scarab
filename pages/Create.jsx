@@ -20,7 +20,7 @@ import CustomButton from "../components/CustomButton";
 const Create = ({ navigation }) => {
   const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState({
-    title: "",
+    caption: "",
     image: null,
     scheduleDate: null,
     scheduleTime: null,
@@ -45,18 +45,24 @@ const Create = ({ navigation }) => {
   };
 
   const submit = async () => {
-    if (form.title === "" || !form.image) {
+    if (form.caption === "" || !form.image) {
       return Alert.alert("Please provide all fields");
     }
 
     setUploading(true);
 
     try {
+      const userDetails =
+        JSON.parse(await AsyncStorage.getItem("userDetails")) || {};
       const posts = JSON.parse(await AsyncStorage.getItem("posts")) || [];
       posts.unshift({
         id: Date.now().toString(),
-        title: form.title,
+        username: userDetails.username || "Anonymous",
+        avatar: userDetails.avatar || "", // Add avatar URL or placeholder if needed
         image: form.image.uri,
+        caption: form.caption,
+        date: new Date().toLocaleDateString(),
+        time: new Date().toLocaleTimeString(),
         scheduleDate: form.scheduleDate
           ? form.scheduleDate.toISOString()
           : null,
@@ -70,7 +76,7 @@ const Create = ({ navigation }) => {
 
       // Clear the form
       setForm({
-        title: "",
+        caption: "",
         image: null,
         scheduleDate: null,
         scheduleTime: null,
@@ -103,8 +109,8 @@ const Create = ({ navigation }) => {
           <CustomTextInput
             title="Caption"
             placeholder="Give your image a catchy caption..."
-            value={form.title}
-            onChangeText={(text) => setForm({ ...form, title: text })}
+            value={form.caption}
+            onChangeText={(text) => setForm({ ...form, caption: text })}
           />
         </View>
 

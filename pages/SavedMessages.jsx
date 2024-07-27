@@ -29,42 +29,44 @@ const SavedPosts = () => {
       <Text style={styles.title}>Saved Posts</Text>
       <ScrollView>
         {favorites.length > 0 ? (
-          favorites.map((post) => (
-            <View key={post.id} style={styles.postContainer}>
-              <View style={styles.header}>
-                <Image source={{ uri: post.avatar }} style={styles.avatar} />
-                <View style={styles.headerText}>
-                  <Text style={styles.username}>{post.username}</Text>
-                  <Text style={styles.date}>
-                    {post.date} at {post.time}
-                  </Text>
+          favorites.map((post) => {
+            const isLocalImage = typeof post.image !== "string";
+            return (
+              <View key={post.id} style={styles.postContainer}>
+                <View style={styles.header}>
+                  <Image
+                    source={isLocalImage ? post.avatar : { uri: post.avatar }}
+                    style={styles.avatar}
+                  />
+                  <View style={styles.headerText}>
+                    <Text style={styles.username}>{post.username}</Text>
+                    <Text style={styles.date}>
+                      {post.date} at {post.time}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-              <Image
-                source={
-                  typeof post.image !== "string"
-                    ? post.image
-                    : { uri: post.image }
-                }
-                style={styles.postImage}
-              />
-              <Text style={styles.caption}>{post.caption}</Text>
-              <TouchableOpacity
-                onPress={() => toggleFavorite(post)}
-                style={styles.favoriteButton}
-              >
-                <IconButton
-                  icon={
-                    favorites.some((item) => item.id === post.id)
-                      ? "heart"
-                      : "heart-outline"
-                  }
-                  iconColor="red"
-                  size={30}
+                <Image
+                  source={isLocalImage ? post.image : { uri: post.image }}
+                  style={styles.postImage}
                 />
-              </TouchableOpacity>
-            </View>
-          ))
+                <Text style={styles.caption}>{post.caption}</Text>
+                <TouchableOpacity
+                  onPress={() => toggleFavorite(post)}
+                  style={styles.favoriteButton}
+                >
+                  <IconButton
+                    icon={
+                      favorites.some((item) => item.id === post.id)
+                        ? "heart"
+                        : "heart-outline"
+                    }
+                    iconColor="red"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              </View>
+            );
+          })
         ) : (
           <Text style={styles.noPostsText}>No saved posts yet.</Text>
         )}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,41 +6,85 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
+  TouchableOpacity,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Profile({ navigation }) {
-  // Dummy data for the profile
-  const userData = {
-    username: "Akanksha",
-    email: "akankshapandey0900@example.com",
+  const [userData, setUserData] = useState(null);
+
+  const data = {
     bio: "Lover of nature and technology. Passionate about coding and coffee.",
     profilePicture:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCvFCNx3XOOU9GirFqWfVMedEN_EIzJS-aKg&usqp=CAU", // Placeholder image URL
     posts: [
-      { id: 1, content: "Had a great day at the park!" },
-      { id: 2, content: "Started a new React Native project." },
-      { id: 3, content: "Enjoying a nice cup of coffee." },
+      {
+        id: 1,
+        imageUrl:
+          "https://gratisography.com/wp-content/uploads/2024/03/gratisography-vr-glasses-800x525.jpg",
+      },
+      {
+        id: 2,
+        imageUrl:
+          "https://d38b044pevnwc9.cloudfront.net/cutout-nuxt/enhancer/3.jpg",
+      },
+      {
+        id: 3,
+        imageUrl:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBLLldsYx7o2X3YmZzDaybBUQ-8LmvBBwBMA&usqp=CAU",
+      },
     ],
   };
+
+  useEffect(() => {
+    async function fetchData() {
+      const userDataString = await AsyncStorage.getItem("userData");
+      if (userDataString) {
+        setUserData(JSON.parse(userDataString));
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  const handleLogout = () => {
+    // Clear any user data from AsyncStorage if necessary
+    AsyncStorage.removeItem("posts").then(() => {
+      navigation.navigate("Getting Started");
+    });
+  };
+
+  if (!userData) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Image
-          source={{ uri: userData.profilePicture }}
+          source={{ uri: data.profilePicture }}
           style={styles.profilePicture}
         />
         <Text style={styles.username}>{userData.username}</Text>
         <Text style={styles.email}>{userData.email}</Text>
-        <Text style={styles.bio}>{userData.bio}</Text>
+        <Text style={styles.bio}>{data.bio}</Text>
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <MaterialIcons name="logout" size={30} color="white" />
+        </TouchableOpacity>
       </View>
       <View style={styles.posts}>
         <Text style={styles.postsTitle}>Posts</Text>
-        {userData.posts.map((post) => (
-          <View key={post.id} style={styles.post}>
-            <Text style={styles.postContent}>{post.content}</Text>
-          </View>
-        ))}
+        {data.posts &&
+          data.posts.map((post) => (
+            <View key={post.id} style={styles.post}>
+              <Image source={{ uri: post.imageUrl }} style={styles.postImage} />
+            </View>
+          ))}
       </View>
     </ScrollView>
   );
@@ -101,5 +145,25 @@ const styles = StyleSheet.create({
   postContent: {
     fontSize: 16,
     color: "white",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#161622",
+  },
+  loadingText: {
+    color: "white",
+    fontSize: 18,
+  },
+  postImage: {
+    width: "100%",
+    height: 200,
+    borderRadius: 10,
+  },
+  logoutButton: {
+    position: "absolute",
+    top: 40,
+    right: 20,
   },
 });
