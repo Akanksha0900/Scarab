@@ -5,6 +5,7 @@ import CustomTextInput from "../components/CustomTextInput";
 import { IconButton } from "react-native-paper";
 import { FavoriteContext } from "../Contexts/FavoritesContext";
 import Post from "../components/Post";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const images = {
   img1: require("../assets/posts/img1.jpg"),
@@ -250,37 +251,39 @@ export default function Feed({ navigation }) {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <ScrollView>
-        <View style={styles.headingContainer}>
-          <Text style={styles.heading}>Scarab</Text>
-          <IconButton
-            icon="message-reply-text"
-            iconColor="#FFF"
-            size={30}
-            onPress={() => navigation.navigate("Messages")}
-          />
-        </View>
-        <View>
-          <CustomTextInput
-            placeholder={`What's on your mind, ${userName}?`}
-            handleFocus={() => navigation.navigate("Create")}
-            icon="pencil"
-          />
-        </View>
-
-        <View style={styles.postsContainer}>
-          {postsData.map((post) => (
-            <Post
-              key={post.id}
-              post={post}
-              toggleFavorite={() => toggleFavorite(post)}
-              isFavorite={favorites.some((item) => item.id === post.id)}
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <ScrollView>
+          <View style={styles.headingContainer}>
+            <Text style={styles.heading}>Scarab</Text>
+            <IconButton
+              icon="message-reply-text"
+              iconColor="#FFF"
+              size={30}
+              onPress={() => navigation.navigate("Messages")}
             />
-          ))}
-        </View>
-      </ScrollView>
-    </View>
+          </View>
+          <View>
+            <CustomTextInput
+              placeholder={`What's on your mind, ${userName}?`}
+              handleFocus={() => navigation.navigate("Create")}
+              icon="pencil"
+            />
+          </View>
+
+          <View style={styles.postsContainer}>
+            {postsData.map((post) => (
+              <Post
+                key={post.id}
+                post={post}
+                toggleFavorite={() => toggleFavorite(post)}
+                isFavorite={favorites.some((item) => item.id === post.id)}
+              />
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 }
 const { height, width } = Dimensions.get("window");
@@ -296,7 +299,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 10,
-    marginTop: height * 0.05,
+    marginTop: height * 0.01,
   },
   heading: {
     color: "#FFF",
